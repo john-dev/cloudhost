@@ -13,9 +13,9 @@ Server = cloudapp
 Proxy = cloudhost
 
 Client authenticates with the server, through the proxy.
-The proxy does nothing in this case, it simply routes the traffic to the targets and sotres some information that it needs later.
+The proxy does nothing in this case, it simply routes the traffic to the targets and stores some information it needs later.
 
-Clients ask for an item list, which can be either the one from cloudhost, from cloudapp or a combined list from both.
+Client ask for an item list, which can be either the one from cloudhost, from cloudapp or a combined list from both.
 
 Client requests an auth code from Server through the proxy. This auth code will be stored by proxy, and redirected to the client.
 
@@ -24,3 +24,5 @@ Client requests a new item ticket, which will be handled by the Server. The prox
 The Client now starts a POST upload to the destination, the proxy gave him. The ticket is validated here and the upload is handled by the proxys data-storage.
 
 Thats it!
+
+Coming soon..
