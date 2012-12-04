@@ -24,6 +24,7 @@ Thats it!
   - mod_headers (to fix php bug with charset after boundary) 
 - php >=5.3.x
 - mysqli
+- curl
 
 #Setup:
 - Create database using db_create.sql
