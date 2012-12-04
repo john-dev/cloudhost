@@ -3,7 +3,7 @@ Cloudhost
 cloudhost is a proxy / data-storage for cloudapp build in php. You can use it with an existing account. The main difference is, file uploads are redirected to your own data-storage.
 Cloudhost works as proxy until the fileupload ticket has been received / created. This upload ticket will be passed through to the client in a modified version, to redirect it to a different data-storage (instead of amazon s-3). The ticket will further be used to handle the upload at the new data-storage.
 
-How it works: 
+#How it works: 
   Client = Cloudapp-Client 
   Server = cloudapp 
   Proxy = cloudhost
@@ -16,14 +16,14 @@ The Client now starts a POST upload to the destination, the proxy gave him. The 
 
 Thats it!
 
-Requirements (same as development enviroment):
+#Requirements (same as development enviroment):
 apache2
   mod_rewrite
   mod_headers (to fix php bug with charset after boundary)
 php >=5.3.x
 mysqli
 
-Setup:
+#Setup:
 Create database using db_create.sql
 Add a valid (=cloudapp account) email to table "user" (for example with phpmyadmin)
 Change includes/config.php to your needs (it's commented)
@@ -33,13 +33,13 @@ Setup a vhost for <fontend vhost> (set in includes/config.php) pointing to front
 Set chmod 775 for data/
 Done.
 
-This version ONLY supports:
+#This version ONLY supports:
 cloudapp for mac
 fluffyapp for pc
 cloudette for iphone/ipad
 maybe some other clients, i did not test any others..
 
-Project status:
+#Project status:
 Finished:
   The handler for supported cloudapp's  are finished
   The frontend (only able to serve files, the account-frontend isn't written yet)
