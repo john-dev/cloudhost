@@ -43,7 +43,7 @@ Thats it!
 
 #Project status:
 Finished:
-  - The handler for supported cloudapp's  are finished
+  - The handler for supported cloudapp's is complete
   - The frontend (only able to serve files, the account-frontend isn't written yet)
   
 
