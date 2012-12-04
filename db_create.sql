@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS `files` (
   `enabled` int(1) NOT NULL DEFAULT '1',
   `unique_hash` varchar(32) NOT NULL,
   `deleted_at` int(35) NOT NULL DEFAULT '0',
-  `item_type` varchar(255) NOT NULL DEFAULT 'data',
+  `item_type` varchar(255) NOT NULL DEFAULT 'unknown',
   `download_shorturl` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
