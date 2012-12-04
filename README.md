@@ -1,7 +1,9 @@
-Cloudhost
+# cloudhost
 
 cloudhost is a proxy / data-storage for cloudapp build in php. You can use it with an existing account. The main difference is, file uploads are redirected to your own data-storage.
 Cloudhost works as proxy until the fileupload ticket has been received / created. This upload ticket will be passed through to the client in a modified version, to redirect it to a different data-storage (instead of amazon s-3). The ticket will further be used to handle the upload at the new data-storage.
+
+----------
 
 #How it works: 
   - Client = Cloudapp-Client 
