@@ -10,6 +10,10 @@ class handleREQUEST {
        $this->header_in=$header_in;
        $this->_ch = curl_init();
        $this->db=new mysqli( DB_HOST , DB_USER , DB_PASS , DB_NAME);
+       if(!isset($_SERVER['REDIRECT_URL']) || $_SERVER['REDIRECT_URL']=="") {
+            header('Location: '.CLOUDHOST_ACCOUNT_FRONTEND);
+            exit();
+       }
        $this->splitREQUEST();
     }
     
