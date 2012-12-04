@@ -1,10 +1,5 @@
 <?
 //cloudhost by john-dev
-//-------------------------- Basic Configuration -----------------------------//
-ini_set("display_errors", TRUE);
-ini_set("display_errors", 1);
-error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
-//-------------------------- Standard Requirements ---------------------------//
 
 include("../includes/config.php");
 include("../includes/function.inc.php");
