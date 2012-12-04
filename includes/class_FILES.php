@@ -37,6 +37,10 @@ class handleFILES {
         $res['last_viewed_at']=null;
         $res['gauge_id']=null;//gau what?
         $res['filesize']=$filesize;//works? works!
+        if($res['item_type']=="bookmark" && USE_SHORTURLS) {
+            $stats=new handleSHORTURL();
+            $res['view_counter']=$stats->getHITS_SIMPLE($res['url']);
+        }
         return $res;
     }
 
