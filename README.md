@@ -41,7 +41,7 @@ Thats it!
 - maybe some other clients, i did not test any others..
 
 #Project status:
--Finished:
+Finished:
   - The handler for supported cloudapp's  are finished
   - The frontend (only able to serve files, the account-frontend isn't written yet)
   
