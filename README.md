@@ -12,7 +12,6 @@ Cloudhost works as proxy until the fileupload ticket has been received / created
 
 Client authenticates with the server, through the proxy. The proxy does nothing in this case, it simply routes the traffic to the targets and stores some information it needs later.
 Client ask for an item list, which can be either the one from cloudhost, from cloudapp or a combined list from both.
-Client requests an auth code from Server through the proxy. This auth code will be stored by proxy, and redirected to the client.
 Client requests a new item ticket, which will be handled by the Server. The proxy then uses this ticket to create valid upload ticket for it's own data-storage and redirect it modified to the client.
 The Client now starts a POST upload to the destination, the proxy gave him. The ticket is validated here and the upload is handled by the proxys data-storage.
 
