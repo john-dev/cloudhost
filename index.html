@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Cloudhost : cloudhost is a proxy / data-storage for cloudapp build in php" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Cloudhost</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/john-dev/cloudhost">View on GitHub</a>
+
+          <h1 id="project_title">Cloudhost</h1>
+          <h2 id="project_tagline">cloudhost is a proxy / data-storage for cloudapp build in php</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/john-dev/cloudhost/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/john-dev/cloudhost/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>cloudhost</h1>
+
+<p>cloudhost is a proxy / data-storage for cloudapp build in php. You can use it with an existing account. The main difference is, file uploads are redirected to your own data-storage.
+Cloudhost works as proxy until the fileupload ticket has been received / created. This upload ticket will be passed through to the client in a modified version, to redirect it to a different data-storage (instead of amazon s-3). The ticket will further be used to handle the upload at the new data-storage.</p>
+
+<hr><h1>How it works:</h1>
+
+<ul>
+<li>Client = Cloudapp-Client </li>
+<li>Server = cloudapp </li>
+<li>Proxy = cloudhost</li>
+</ul><p>Client authenticates with the server, through the proxy. The proxy does nothing in this case, it simply routes the traffic to the targets and stores some information it needs later.
+Client ask for an item list, which can be either the one from cloudhost, from cloudapp or a combined list from both.
+Client requests a new item ticket, which will be handled by the Server. The proxy then uses this ticket to create valid upload ticket for it's own data-storage and redirect it modified to the client.
+The Client now starts a POST upload to the destination, the proxy gave him. The ticket is validated here and the upload is handled by the proxys data-storage.</p>
+
+<p>Thats it!</p>
+
+<h1>Requirements (same as development enviroment):</h1>
+
+<ul>
+<li>apache2
+
+<ul>
+<li>mod_rewrite</li>
+<li>mod_headers (to fix php bug with charset after boundary) </li>
+</ul>
+</li>
+<li>php &gt;=5.3.x</li>
+<li>mysqli</li>
+<li>curl</li>
+</ul><h1>Setup:</h1>
+
+<ul>
+<li>Create database using db_create.sql</li>
+<li>Add a valid (=cloudapp account) email to table "user" (for example with phpmyadmin)</li>
+<li>Change includes/config.php to your needs (it's commented)</li>
+<li>Change the dns reply from my.cl.ly to your server's ip (using hosts or dns-overwrite etc..)</li>
+<li>Setup a vhost for my.cl.ly pointing to cloudhost/ as document root</li>
+<li>Setup a vhost for  (set in includes/config.php) pointing to frontend/ as document root</li>
+<li>Set chmod 775 for data/</li>
+<li>Done.</li>
+</ul><h1>This version ONLY supports:</h1>
+
+<ul>
+<li>cloudapp for mac</li>
+<li>fluffyapp for pc</li>
+<li>cloudette for iphone/ipad</li>
+<li>maybe some other clients, i did not test any others..</li>
+</ul><h1>Project status:</h1>
+
+<p>Finished:</p>
+
+<ul>
+<li>The handler for supported cloudapp's is complete</li>
+<li>The frontend (only able to serve files, the account-frontend isn't written yet)</li>
+</ul><p>Not finished: </p>
+
+<ul>
+<li>own authentication (requires real user accounts at cloudhost)<br>
+</li>
+<li>account managing for cloudhost/cloudapp</li>
+<li>statistics from google shorturls<br>
+</li>
+<li>delete / modify in webfrontend</li>
+</ul>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Cloudhost maintained by <a href="https://github.com/john-dev">john-dev</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
