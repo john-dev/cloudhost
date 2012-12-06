@@ -1,10 +1,10 @@
 # cloudhost
 
-cloudhost is either a clone from cloudapp, or a proxy / data-storage build in php.
-The main difference is, you can host it on your own server completly appart from cloudapp or, you can use it as a proxy until the file-upload starts.
+cloudhost is either a clone from cloudapp or a proxy / data-storage build in php.
+The main difference is, you can host it on your own server completly appart from cloudapp or you can use it as a proxy until the file-upload starts.
 You can use various cloudapp apps like the nativ os x client, fluffyapp, cloudette or clouddrop.
 
-Cloudhost supports anything cloudapp does (except their nice web-interface, at least not yet). Even pusherapp to update changes on all your clients in realtime.
+Cloudhost supports anything cloudapp does (except their fancy web-interface, at least not yet). Even pusherapp to update changes on all your clients in realtime.
 
 ----------
 
@@ -27,7 +27,7 @@ Cloudhost supports anything cloudapp does (except their nice web-interface, at l
 - Set chmod 775 for data/
 - Add a new user "user" using: php includes/add_user.php user password after you setup your system!!
   - leave password empty to use an existing cloudapp account
-    - be sure you set CLOUDAPP_AUTHSERVER (config.php) to http://my.cl.ly
+  - - be sure you set CLOUDAPP_AUTHSERVER (config.php) to http://my.cl.ly when you dont provide a password
 - Done.
  
 #Note:
