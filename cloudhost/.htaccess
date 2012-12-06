@@ -12,8 +12,8 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php [L]
 
-SetEnvIf Content-Type ^(.*)(\;)(\s|%20)(charset=UTF-8) NEW_CONTENT_TYPE=$1 OLD_CONTENT_TYPE=$1$2
-RequestHeader set Content-Type %{NEW_CONTENT_TYPE}e env=NEW_CONTENT_TYPE 
+ SetEnvIf Content-Type ^(.*)(\;)(\s|%20)(charset=UTF-8) NEW_CONTENT_TYPE=$1 OLD_CONTENT_TYPE=$1$2
+ RequestHeader set Content-Type %{NEW_CONTENT_TYPE}e env=NEW_CONTENT_TYPE 
 </IfModule>
 php_value post_max_size 2147483648
 

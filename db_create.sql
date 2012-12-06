@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 04. Dezember 2012 um 13:39
+-- Erstellungszeit: 06. Dezember 2012 um 14:46
 -- Server Version: 5.1.54
 -- PHP-Version: 5.3.5-1ubuntu7.7
 
@@ -22,7 +22,7 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur f√ºr Tabelle `files`
+-- Tabellenstruktur für Tabelle `files`
 --
 
 CREATE TABLE IF NOT EXISTS `files` (
@@ -37,21 +37,21 @@ CREATE TABLE IF NOT EXISTS `files` (
   `filesize` int(255) NOT NULL,
   `shorturl` varchar(255) NOT NULL,
   `direct_shorturl` varchar(255) NOT NULL,
-  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created` int(255) NOT NULL,
   `hits` int(255) NOT NULL DEFAULT '0',
   `downloads` int(255) NOT NULL DEFAULT '0',
   `enabled` int(1) NOT NULL DEFAULT '1',
   `unique_hash` varchar(32) NOT NULL,
-  `deleted_at` int(35) NOT NULL DEFAULT '0',
+  `deleted_at` int(255) NOT NULL DEFAULT '0',
   `item_type` varchar(255) NOT NULL DEFAULT 'unknown',
   `download_shorturl` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=26 ;
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur f√ºr Tabelle `keys`
+-- Tabellenstruktur für Tabelle `keys`
 --
 
 CREATE TABLE IF NOT EXISTS `keys` (
@@ -67,25 +67,26 @@ CREATE TABLE IF NOT EXISTS `keys` (
   `email` varchar(255) NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=53 ;
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur f√ºr Tabelle `user`
+-- Tabellenstruktur für Tabelle `user`
 --
 
 CREATE TABLE IF NOT EXISTS `user` (
   `id` int(255) NOT NULL AUTO_INCREMENT,
   `email` varchar(255) NOT NULL,
-  `enabled` int(1) NOT NULL DEFAULT '1',
+  `enabled` int(255) NOT NULL DEFAULT '10',
+  `password` varchar(32) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur f√ºr Tabelle `user_session`
+-- Tabellenstruktur für Tabelle `user_session`
 --
 
 CREATE TABLE IF NOT EXISTS `user_session` (
@@ -94,4 +95,3 @@ CREATE TABLE IF NOT EXISTS `user_session` (
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`cookie`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-

@@ -2,7 +2,7 @@
 class handleAUTH {
     public function doAUTH($email,$header) {                      
             $this->db=new mysqli( DB_HOST , DB_USER , DB_PASS , DB_NAME);           
-            $sql="select count(*) from user where email = ? and enabled=1";            
+            $sql="select count(*) from user where email = ? and enabled>0";            
             $stmt=$this->db->prepare($sql);
             $stmt->bind_param('s',$email);
             $stmt->bind_result($user_exists);
@@ -22,4 +22,15 @@ class handleAUTH {
             }
             return true;
         }
+    public function username_to_user($email) {
+        $this->db=new mysqli( DB_HOST , DB_USER , DB_PASS , DB_NAME);
+        $sql="select id from user where email=?";
+        $stmt=$this->db->prepare($sql);
+        $stmt->bind_param('s',$email);
+        $stmt->bind_result($userID);
+        $stmt->execute();
+        $stmt->fetch();
+        $stmt->close();
+        return $userID;
+    }
 }

@@ -32,9 +32,10 @@ function split_cookie($cookie) {
     if(substr($cookie[0],0,7)=="_engine") {
         return $cookie[0];
     } else {
-        return $cookie[1];
+        return (isset($cookie[1]))?$cookie[1]:false;
     }
 }
+
 function sort2d ($array, $index, $order='asc', $natsort=FALSE, $case_sensitive=FALSE) 
 {
     if(is_array($array) && count($array)>0) 
@@ -248,7 +249,7 @@ return (key_exists($ext, $arr))?$arr[$ext]:'application/octet-stream';
 
 }
 //stolen from the web
-function create_thumbnail_otf($image,$max_w=400,$max_h=300) {
+function create_thumbnail_otf($image,$max_w=0,$max_h=0) {
 $image_file = $image;
 $MAX_WIDTH  = $max_w;
 $MAX_HEIGHT = $max_h;
@@ -276,6 +277,12 @@ if ($img)
 {
   $width = imagesx($img);
   $height = imagesy($img);
+  if($MAX_WIDTH==0) {
+      $MAX_WIDTH=$width;
+  }
+  if($MAX_HEIGHT==0) {
+      $MAX_HEIGHT=$height;
+  }
   $scale = min($MAX_WIDTH/$width, $MAX_HEIGHT/$height);
   if ($scale < 1)
   {

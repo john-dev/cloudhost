@@ -34,7 +34,19 @@ class handleREQUEST {
                  'Cookie: '.$this->header_in['Cookie'],
                  'Accept-Language: de-de',
                  'Accept-Encoding: gzip, deflate'
-                 );               
+                 ); 
+                 //we usualy dont handle x-www-form data, but lets convert it to a get request
+                 if(isset($this->header_in['Content-Type']) && $this->header_in['Content-Type']=="application/x-www-form-urlencoded") {
+                     $_GET=$_POST;
+                     $_SERVER['REQUEST_METHOD']="GET";
+                     $_SERVER['QUERY_STRING']="";
+                     foreach ($_GET as $key => $value) {
+                         $_SERVER['QUERY_STRING'].=$key."=".$value."&";
+                     }
+                    if(substr($_SERVER['QUERY_STRING'],-1)=="&") {
+                        $_SERVER['QUERY_STRING']=substr($_SERVER['QUERY_STRING'],0,-1);
+                    }
+                 }              
                  $sql="select email from user_session where cookie=?";
                  $stmt=$this->db->prepare($sql);
                  $stmt->bind_param('s',split_cookie($this->header_in['Cookie']));
@@ -52,11 +64,13 @@ class handleREQUEST {
         }
         $method=$_SERVER['REQUEST_METHOD'];
         $body=($method=="POST")?$_POST:array();
-        $query=$this->query_CLOUDAPP(CLOUDAPP_SERVER.$_SERVER['REDIRECT_URL']."?".$_SERVER['QUERY_STRING'], $headers, $body, $method);
+        $x=(isset($_SERVER['QUERY_STRING']) && $_SERVER['QUERY_STRING']!="")?"?".$_SERVER['QUERY_STRING']:"";
+        $query=$this->query_CLOUDAPP(CLOUDAPP_AUTHSERVER.$_SERVER['REDIRECT_URL'].$x, $headers, $body, $method);    
         $this->header_query=get_headers_from_curl_response($query);
         $this->body_query=json_decode(get_body_from_curl_response($query),true);
         $this->body_query_plain=$query;
         $this->body_in=json_decode(@file_get_contents('php://input'),true);
+        
         if($_SERVER['REDIRECT_URL']!="/upload" && $_SERVER['REDIRECT_URL']!="/items/s3") {//we handle that on our own
             switch ($this->header_query['http_code']) {
                 case "HTTP/1.1 100 Continue":
@@ -92,7 +106,10 @@ class handleREQUEST {
                         header('Server: thin 1.5.0 codename Knife');
                         header('Cache-Control: no-cache');
                         header('Content-Type: text/plain; charset=utf-8');
-                        header('Www-Authenticate: '.$this->header_query['Www-Authenticate']);
+                        if(isset($this->header_query['Www-Authenticate'])) {
+                            header('Www-Authenticate: '.$this->header_query['Www-Authenticate']).')';    
+                        }
+                        
                         header('X-Runtime: 0.000000');
                         header('X-Ua-Compatible: IE=Edge,chrome=1');
                         header('Connection: keep-alive');
@@ -123,7 +140,8 @@ class handleREQUEST {
                     exit();
                     break;
                 default:
-                    die("unknown response: ".print_r($this->header_query));
+                    var_dump($this->header_query);
+                    var_dump( $this->body_query_plain);
                     break;
             }
         }
@@ -151,6 +169,8 @@ class handleREQUEST {
                 //handle bookmarks here
                 if($_SERVER['REQUEST_METHOD']=="POST") {//split itemlisting vs. addbookmark
                     $this->handleADDBOOKMARK();
+                } elseif($_SERVER['REQUEST_METHOD']=="DELETE" || $_SERVER['REQUEST_METHOD']=="PUT") {
+                    $this->handleCHANGE();
                 } else {
                     $this->handleLISTITEMS();    
                 }
@@ -165,13 +185,13 @@ class handleREQUEST {
     
     private function query_CLOUDAPP($url,$headers,$body,$method='GET') {
         curl_setopt($this->_ch, CURLOPT_URL, $url);
-        curl_setopt($this->_ch, CURLOPT_USERAGENT, CLOUDAPP_SERVER.$url);
+        curl_setopt($this->_ch, CURLOPT_USERAGENT, CURL_USER_AGENT);
         curl_setopt($this->_ch, CURLOPT_HEADER, true);
         curl_setopt($this->_ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($this->_ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($this->_ch, CURLOPT_CUSTOMREQUEST, $method);
         curl_setopt($this->_ch, CURLOPT_COOKIEFILE, '/dev/null'); // enables cookies
-        curl_setopt($this->_ch, CURLOPT_FOLLOWLOCATION, false);
+        curl_setopt($this->_ch, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($this->_ch, CURLOPT_POSTFIELDS, $body);
         
         $response = curl_exec($this->_ch);
@@ -196,7 +216,7 @@ class handleREQUEST {
     }
 
     private function handlePUSHER() {
-        //we dont need that authcode, so lets skip this step
+        //this authcode represents a pusher api code, i'll implent that later..
         echo json_custom_encode($this->body_query);        
         exit();
     }
@@ -227,18 +247,36 @@ class handleREQUEST {
     
      private function handleS3() {
         //we got here because we have a valid file upload.. bam!
+        //we will answer with an "invalid response" (missing cookie)
         if(!isset($_GET['key'])) {
             die('no file given');
         }
         $file=new handleFILES();
-        $res=$file->getFILEINFOS($_GET['key']);
+        
+        if(PUSHER_app_id) {
+            $res=$file->getFILEINFOS($_GET['key'],true);
+            $pusher = new Pusher(PUSHER_key, PUSHER_secret, PUSHER_app_id);
+            //filter socket here later somehow..
+            $pusher->trigger('private-items_'.$res['userID'], 'create', $res , false , null, false);
+            unset($res['userID']);    
+        } else {
+            $res=$file->getFILEINFOS($_GET['key']);
+        }
         echo json_custom_encode($res);
         exit();
     }  
 
     private function handleADDBOOKMARK() {
         $bmark=new handleUPLOAD();
-        $res=$bmark->addBOOKMARK($this->body_in,$this->email);
+        if(PUSHER_app_id) {
+            $res=$bmark->addBOOKMARK($this->body_in,$this->email,true);
+            $pusher = new Pusher(PUSHER_key, PUSHER_secret, PUSHER_app_id);
+            //filter socket here later somehow..
+            $pusher->trigger('private-items_'.$res['userID'], 'create', $res , false , null, false);
+            unset($res['userID']);    
+        } else {
+            $res=$bmark->addBOOKMARK($this->body_in,$this->email);
+        }
         echo json_custom_encode($res);
         exit();
     }
@@ -256,4 +294,23 @@ class handleREQUEST {
         }
         exit();
     }
+    
+    private function handleCHANGE() {
+        //mix listitems here?
+        $list=new handleFILES();
+        if($list->changeFILE($_GET['key'],$this->body_in)) {
+            $res=$list->getFILEINFOS($_GET['key'],true);
+            if(PUSHER_app_id && $res) {
+                $pusher = new Pusher(PUSHER_key, PUSHER_secret, PUSHER_app_id);
+                //filter socket here later somehow..
+                $pusher->trigger('private-items_'.$res['userID'], 'update', $res , false , null, false);
+                unset($res['userID']);    
+            }              
+        } else {
+            header("HTTP/1.1 401 Unauthorized");
+        }
+        echo json_custom_encode($res);
+        exit();
+    }
+
 }

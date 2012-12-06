@@ -33,11 +33,12 @@ class handleUPLOAD {
         $direct_shorturl=$surl->newSHORTURL(CLOUDHOST_FILE_FRONTEND_DIRECT."/".$unique_hash);
         $download_shorturl=$surl->newSHORTURL(CLOUDHOST_FILE_FRONTEND_DOWNLOAD."/".$unique_hash);
         $type=$this->getFILETYPE($file_extension);
-        $sql="insert into files (filename,extension,hashname,channel_name,data_storage,email,acl,filesize,shorturl,direct_shorturl,unique_hash,item_type,download_shorturl) values (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        $sql="insert into files (filename,extension,hashname,channel_name,data_storage,email,acl,filesize,shorturl,direct_shorturl,unique_hash,item_type,download_shorturl,created) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
         $stmt=$this->db->prepare($sql);
         $ds=DATA_STORAGE;//unreference it
+        $create_time = strtotime(gmdate("M d Y H:i:s", time()));
         $stmt->bind_param(
-            'sssssssisssss',
+            'sssssssisssssi',
             $original_filename,
             $file_extension,
             $out_file,
@@ -50,7 +51,8 @@ class handleUPLOAD {
             $direct_shorturl,
             $unique_hash,
             $type,
-            $download_shorturl
+            $download_shorturl,
+            $create_time
         );
         $stmt->execute();
         $stmt->close();
@@ -58,62 +60,80 @@ class handleUPLOAD {
     }
 
     private function getFILETYPE($ext) {
-        $image=array('jpg','jpeg','png','tiff','tif','psd','eps','png','bmp','gif');//.. continue as you wish
-        return (in_array($ext,$image))?"image":"unknown";
+        $file['image']=array('jpg','jpeg','png','tiff','tif','psd','eps','png','jpe','bmp','gif');//.. continue as you wish
+        $file['video']=array('mp4','webm','mov','avi','mkv','mpg','mpeg','m4v','ogv');
+        $file['audio']=array('mp3','wav','wave','aaf','aiff');
+        $file['text']=array('txt','rtf','pdf','doc','docx');
+        $file['archive']=array('zip','rar','tar','gz');
+        $a="unknown";
+        $a=(in_array($ext,$file['image']))?"image":$a;
+        $a=(in_array($ext,$file['video']))?"video":$a;
+        $a=(in_array($ext,$file['audio']))?"audio":$a;
+        $a=(in_array($ext,$file['text']))?"text":$a;
+        $a=(in_array($ext,$file['archive']))?"archive":$a;
+        return $a;
     }
     
-    public function addBOOKMARK($req,$email) {
+    public function addBOOKMARK($req,$email,$o_userID=false) {
         //probably the wrong place.. but who cares..
         $this->db=new mysqli( DB_HOST , DB_USER , DB_PASS , DB_NAME);
-        $sql="select count(*),enabled from user where email=?";
+        $sql="select count(*),enabled,id from user where email=?";
         $stmt=$this->db->prepare($sql);
         $stmt->bind_param('s',$email);
-        $stmt->bind_result($count,$enabled);
+        $stmt->bind_result($count,$enabled,$userID);
         $stmt->execute();
         $stmt->fetch();
         $stmt->close();
         unset($stmt);
-        if($count>0 && $enabled==1) {
+        if($count>0 && $enabled<2) {
             $surl=new handleSHORTURL();
-            $shorturl=$surl->newSHORTURL($req['item']['redirect_url']);
-            $sql="insert into files (filename,hashname,extension,email,shorturl,unique_hash,item_type) values (?,?,?,?,?,?,?)";
+            $sql="insert into files (filename,hashname,extension,email,shorturl,unique_hash,item_type,acl,created) values (?,?,?,?,?,?,?,?,?)";
             $stmt=$this->db->prepare($sql);
             $a=md5($req['item']['name'].$email.microtime(true));
             $type="surl";
             $bm="bookmark";
+            $g='public-read';
+            $shorturl=$surl->newSHORTURL(CLOUDHOST_FILE_FRONTEND."/".$a);
+            $created=$create_time = strtotime(gmdate("M d Y H:i:s", time()));
             $stmt->bind_param(
-                'sssssss',
-                $req['item']['name'],
+                'ssssssssi',
+                $req['item']['redirect_url'],
                 md5($req['item']['name']),
                 $type,
                 $email,
                 $shorturl,
                 $a,
-                $bm
+                $bm,
+                $g,
+                $created
         );
         $stmt->execute();
         $stmt->close();
-        return $res=array(
-           'created_at'=>date("Y-m-d",time())."T".date("H:i:s",time())."Z",
+        $last_id=$this->db->insert_id;
+        $res=array(
+           'created_at'=>date("Y-m-d",$created)."T".date("H:i:s",$created)."Z",
            'deleted_at'=>null,
-           'id'=>0,
+           'id'=>$last_id,
            'item_type'=>'bookmark',
            'name'=>$req['item']['name'],
            'private'=>true,
-           'redirect_url'=>$req['item']['redirect_url'],
-           'remote_url'=>null,
+           'redirect_url'=>($item_type=="bookmark")?$filename:$req['item']['redirect_url'],
+           'remote_url'=>($item_type=="bookmark")?$filename:null,
            'source'=>CURL_USER_AGENT,
-           'updated_at'=>date("Y-m-d",time())."T".date("H:i:s",time())."Z",
+           'updated_at'=>date("Y-m-d",$created)."T".date("H:i:s",$created)."Z",
            'view_counter'=>0,
-           'href'=>CLOUDHOST_FILE_FRONTEND."/",$a,
+           'href'=>(USE_SHORTURLS)?$shorturl:CLOUDHOST_FILE_FRONTEND."/".$a,
            'icon'=>"http://my.cld.me/images/item-types/bookmark.png",//fix that later
            'subscribed'=>false,
-           "url"=>$shorturl,
-           'content_url'=>$shorturl,
+           "url"=>(USE_SHORTURLS)?$shorturl:CLOUDHOST_FILE_FRONTEND."/".$a,
+           'content_url'=>(USE_SHORTURLS)?$shorturl:CLOUDHOST_FILE_FRONTEND."/".$a,
            'last_viewed_at'=>null,
            'gauge_id'=>null        
         );
-        //sample{"created_at":"2012-12-02T19:16:33Z","deleted_at":null,"id":24481988,"item_type":"bookmark","name":"https://github.com/matthiasplappert/CloudApp-API-PHP-wrapper","private":true,"redirect_url":"https://github.com/matthiasplappert/CloudApp-API-PHP-wrapper","remote_url":null,"source":"Cloud/1.5.4 CFNetwork/520.5.1 Darwin/11.4.2 (x86_64) (MacBookPro8%2C1)","updated_at":"2012-12-02T19:16:33Z","view_counter":0,"href":"http://my.cl.ly/items/24481988","icon":"http://my.cld.me/images/item-types/bookmark.png","subscribed":false,"url":"http://cl.ly/2W0h2l3R0l1f","content_url":"http://cl.ly/2W0h2l3R0l1f","last_viewed_at":null,"gauge_id":null}
+        if($o_userID && PUSHER_app_id) {
+            $res['userID']=$userID;
+        }
+        return $res;
         } else {
             return false;
         }

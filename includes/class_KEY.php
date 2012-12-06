@@ -34,7 +34,8 @@ class handleKEY {
                 `key`,
                 acl,
                 email,
-                unix_timestamp(created) 
+                unix_timestamp(created),
+                id
             from 
                 `keys`
             where
@@ -62,12 +63,18 @@ class handleKEY {
             $creds['acl'],
             $creds['policy']
         );
-        $stmt->bind_result($success_action_redirect,$key,$acl,$email,$created);
+        $stmt->bind_result($success_action_redirect,$key,$acl,$email,$created,$key_id);
         $stmt->execute();
         $stmt->fetch();
         $stmt->close();
         unset($stmt);
         if($created) {
+            $sql="delete from `keys` where id=?";
+            $stmt=$this->db->prepare($sql);
+            $td=$created+KEY_VALIDATION_TIME;
+            $stmt->bind_param('i',$key_id);
+            $stmt->execute();
+            $stmt->close();
             if($created+KEY_VALIDATION_TIME>time()) {
                     return array('success_action_redirect'=>$success_action_redirect,'key'=>$key,'acl'=>$acl,'email'=>$email);
             } else {
