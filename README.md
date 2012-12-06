@@ -1,7 +1,7 @@
 # cloudhost
 
 cloudhost is either a clone from cloudapp or a proxy / data-storage build in php.
-The main difference is, you can host it on your own server completly appart from cloudapp or you can use it as a proxy until the file-upload starts.
+The main difference is, you can host it on your own server completely appart from cloudapp or you can use it as a proxy until the file-upload starts.
 You can use various cloudapp apps like the nativ os x client, fluffyapp, cloudette or clouddrop.
 
 Cloudhost supports anything cloudapp does (except their fancy web-interface, at least not yet). Even pusherapp to update changes on all your clients in realtime.
@@ -43,7 +43,7 @@ When using cloudapp (http://my.cl.ly) as auth-server instead of cloudhost, pushi
 #Project status:
 Finished:
   - The handler for supported cloudapp's is complete
-  - Own authentication backend to be completly apart from cloudapp
+  - Own authentication backend to be completely apart from cloudapp
   - The frontend (is only able to serve files, the account-frontend isn't written yet)
   
 
