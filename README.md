@@ -31,7 +31,7 @@ Cloudhost supports nearly anything cloudapp does (except their fancy web-interfa
 - Done.
  
 #Note:
-When using cloudapp (http://my.cl.ly) as auth-server instead of cloudhost, pushing will be disabled!
+When using cloudapp (http://my.cl.ly) as auth-server instead of cloudhost, pushing will be disabled (we dont send new file's to cloudapp, how should they know?!)
 
 #This version supports:
 - cloudapp for mac
