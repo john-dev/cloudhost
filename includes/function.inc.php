@@ -266,7 +266,9 @@ if ($ext == 'jpg' || $ext == 'jpeg')
 }
 else if ($ext == 'png')
 {
-  $img = @imagecreatefrompng($image_path);
+    //fix pngs
+  $img = imagecreatefromstring(file_get_contents($image_path));
+  #$img = @imagecreatefrompng($image_path);
 }
 else if ($ext == 'gif')
 {
