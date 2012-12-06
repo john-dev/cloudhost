@@ -27,7 +27,7 @@ Cloudhost supports anything cloudapp does (except their fancy web-interface, at 
 - Set chmod 775 for data/
 - Add a new user "user" using: php includes/add_user.php user password after you setup your system!!
   - leave password empty to use an existing cloudapp account
-  - be sure you set CLOUDAPP_AUTHSERVER (config.php) to http://my.cl.ly when you dont provide a password
+  - be sure you set CLOUDAPP_AUTHSERVER (config.php) to http://my.cl.ly if you dont provide a password
 - Done.
  
 #Note:
