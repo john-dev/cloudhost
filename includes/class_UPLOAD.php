@@ -85,7 +85,7 @@ class handleUPLOAD {
         $stmt->fetch();
         $stmt->close();
         unset($stmt);
-        if($count>0 && $enabled<2) {
+        if($count>0 && $enabled>0) {
             $surl=new handleSHORTURL();
             $sql="insert into files (filename,hashname,extension,email,shorturl,unique_hash,item_type,acl,created) values (?,?,?,?,?,?,?,?,?)";
             $stmt=$this->db->prepare($sql);
