@@ -33,7 +33,7 @@ Cloudhost supports anything cloudapp does (except their fancy web-interface, at 
 #Note:
 When using cloudapp (http://my.cl.ly) as auth-server instead of cloudhost, pushing will be disabled!
 
-#This version ONLY supports:
+#This version supports:
 - cloudapp for mac
 - fluffyapp for pc
 - cloudette for iphone/ipad
