@@ -24,7 +24,7 @@ Cloudhost supports nearly anything cloudapp does (except their fancy web-interfa
 - Setup a vhost for my.cl.ly pointing to cloudhost/ as document root
 - Setup a vhost for your frontend (set in includes/config.php) pointing to frontend/ as document root
 - Setup either a vhost for the auth-server (set in includes/config.php) pointing to cloudauth/ as document root or set CLOUDAPP_AUTHSERVER (includes/config.php) to http://my.cl.ly to use an existing cloudapp acc
-- Set chmod 775 for data/
+- Set chmod 777 for data/
 - Add a new user "user" using: php includes/add_user.php user password after you setup your system!!
   - leave password empty to use an existing cloudapp account
   - be sure you set CLOUDAPP_AUTHSERVER (config.php) to http://my.cl.ly if you dont provide a password
