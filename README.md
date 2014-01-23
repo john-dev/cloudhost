@@ -1,5 +1,5 @@
 # cloudhost
-
+Broken since cloudapp 2.0
 cloudhost is either a clone from cloudapp or a proxy / data-storage build in php.
 The main difference is, you can host it on your own server completely appart from cloudapp or you can use it as a proxy until the file-upload starts.
 You can use various cloudapp apps like the native os x cloudapp, fluffyapp (windows), cloudette or cloudrop (ios).
